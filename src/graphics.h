@@ -13,10 +13,10 @@ namespace graphics
 extern int fps;
 
 // Constants.
-inline constexpr int HUD_HEIGHT_PX = 20;
+inline constexpr int HUD_HEIGHT_PX = 30;
 inline constexpr int TEXT_HEIGHT_PX = HUD_HEIGHT_PX - 5;
 
-inline constexpr int CELL_SIZE_PX = 5;
+inline constexpr int CELL_SIZE_PX = 10;
 
 inline constexpr int WINDOW_WIDTH_PX = 1440;
 static_assert(WINDOW_WIDTH_PX % CELL_SIZE_PX == 0);
@@ -34,7 +34,7 @@ inline constexpr int FPS_LOWER_LIMIT = 6;
 const Color BACKGROUND_COLOR = { 29, 29, 29, 255 };
 const Color LIVE_CELL_COLOR = { 0, 255, 0, 255 };
 const Color DEAD_CELL_COLOR = { 55, 55, 55, 255 };
-const Color TEXT_COLOR = { 255, 0, 0, 255 };
+const Color TEXT_COLOR = { 255, 165, 0, 255 };
 
 const std::tuple<int, int> INVALID_MOUSE_POSITION = { -1, -1 };
 
