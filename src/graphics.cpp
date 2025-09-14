@@ -128,6 +128,18 @@ InputEvent pollInput(bool allowCellResizing)
     if (IsKeyPressed(KEY_Z)) {
         return Event::RANDOMIZE_SIM_REQUESTED;
     }
+    if (IsKeyPressed(KEY_A)) {
+        return Event::APPLY_PATTERN_REQUESTED;
+    }
+    if (IsKeyPressed(KEY_N)) {
+        return Event::NEXT_PATTERN_REQUESTED;
+    }
+    if (IsKeyPressed(KEY_P)) {
+        return Event::PREV_PATTERN_REQUESTED;
+    }
+    if (IsKeyPressed(KEY_D)) {
+        return Event::DUMP_REQUESTED;
+    }
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
         Vector2 mousePosition = GetMousePosition();
@@ -143,7 +155,7 @@ InputEvent pollInput(bool allowCellResizing)
     return Event::NIL;
 }
 
-void drawHUD(const cgl::Simulation &sim)
+void drawHUD(const cgl::Simulation &sim, const cgl::PatternSelector& selector)
 {
     static const char *option0Messages[] = {
         "GAME PAUSED",
@@ -161,18 +173,18 @@ void drawHUD(const cgl::Simulation &sim)
 
     if (globals::showControls)
     {
-        hud = "run/pause (SPACE), (f)aster, (s)lower, (r)eset, randomi(z)e, (e)nlarge, s(h)rink, (c)lose";
+        hud = "run/pause (SPACE), (f)aster, (s)lower, (r)eset, randomi(z)e, (e)nlarge, s(h)rink, (a)pply, (n)ext, (p)revious, (c)lose";
     }
     else
     {
         hud = TextFormat(
-            "[fps %02i] [%-11s] [gen %5ld] | [%s] | (c)ontrols ",
+            "[fps %02i] [%-11s] [gen %5ld] | [p(a)ttern %20s] | (c)ontrols ",
             globals::fps,
             sim.running()
                 ? option1Messages[secOrdinal % (sizeof(option1Messages) / sizeof(option1Messages[0]))]
                 : option0Messages[secOrdinal % (sizeof(option0Messages) / sizeof(option0Messages[0]))],
             sim.age(),
-            "pattern GLIDER GUN"
+            selector.selectedPattern()->name()
         );
     }
 
@@ -185,9 +197,9 @@ std::pair<int, int> calcSimulationDimensions()
     return std::make_pair(GRID_HEIGHT_PX / globals::cellSize, GRID_WIDTH_PX / globals::cellSize);
 }
 
-void drawSimulation(const cgl::Simulation& sim)
+void drawFrame(const cgl::Simulation& sim, const cgl::PatternSelector& selector)
 {
-    drawHUD(sim);
+    drawHUD(sim, selector);
 
     const cgl::Grid *grid = sim.currentGeneration();
     for (int row = 0; row < grid->sizeRows(); ++row)

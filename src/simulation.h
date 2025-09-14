@@ -16,6 +16,8 @@ public:
     Simulation& operator=(const Simulation&) = delete;
     Simulation& operator=(Simulation&&) = delete;
 
+    int sizeRows() const;
+    int sizeColumns() const;
     bool advance();
     bool toggleCell(int row, int col);
     bool randomize();
@@ -25,8 +27,11 @@ public:
     void run();
     void pause();
     bool reset();
+    void dump();
 
 private:
+    const int _rows;
+    const int _columns;
     Grid _a;
     Grid _b;
     Grid *_current;

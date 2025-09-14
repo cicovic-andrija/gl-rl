@@ -2,6 +2,7 @@
 #include <tuple>
 #include <vector>
 #include <random>
+#include <iostream>
 
 #include "simulation.h"
 
@@ -9,14 +10,26 @@ namespace cgl
 {
 
 Simulation::Simulation(int rows, int columns)
-    : _a(rows, columns)
-    , _b(rows, columns)
+    : _rows(rows)
+    , _columns(columns)
+    , _a(_rows, _columns)
+    , _b(_rows, _columns)
     , _current(&_a)
     , _temp(&_b)
     , _age(0)
     , _running(false)
 {
 
+}
+
+int Simulation::sizeRows() const
+{
+    return _rows;
+}
+
+int Simulation::sizeColumns() const
+{
+    return _columns;
 }
 
 int Simulation::countLiveNeighbours(int row, int col) const
@@ -139,6 +152,22 @@ bool Simulation::reset()
     _age = 0;
 
     return true;
+}
+
+void Simulation::dump()
+{
+    if (_running) return;
+
+    for (int row = 0; row < _current->sizeRows(); ++row)
+    {
+        for (int col = 0; col < _current->sizeColumns(); ++col)
+        {
+            if (_current->cellState(row, col) == LIVE)
+            {
+                std::cout << "TGL(" << row << ", " << col << ");" << std::endl;
+            }
+        }
+    }
 }
 
 double Simulation::rand01()

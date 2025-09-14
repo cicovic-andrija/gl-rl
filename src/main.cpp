@@ -2,6 +2,7 @@
 
 #include "graphics.h"
 #include "simulation.h"
+#include "patterns.h"
 
 cgl::Simulation *makeSimulation()
 {
@@ -14,6 +15,7 @@ int main()
     graphics::initialize();
 
     cgl::Simulation *sim = makeSimulation();
+    cgl::PatternSelector selector;
 
     bool exit = false;
     while (!exit)
@@ -37,6 +39,17 @@ int main()
                 // does nothing if the sim is running
                 sim->reset();
                 break;
+            case graphics::Event::APPLY_PATTERN_REQUESTED: {
+                // does nothing if the sim is running
+                selector.selectedPattern()->applyTo(sim);
+                break;
+            }
+            case graphics::Event::NEXT_PATTERN_REQUESTED:
+                selector.moveForwards();
+                break;
+            case graphics::Event::PREV_PATTERN_REQUESTED:
+                selector.moveBackwards();
+                break;
             case graphics::Event::CELL_SIZE_CHANGED:
                 delete sim;
                 sim = makeSimulation();
@@ -44,6 +57,9 @@ int main()
             case graphics::Event::TOGGLE_CELL_REQUESTED:
                 // does nothing if the sim is running
                 sim->toggleCell(event.row, event.col);
+                break;
+            case graphics::Event::DUMP_REQUESTED:
+                sim->dump();
                 break;
             default:
                 break;
@@ -54,7 +70,7 @@ int main()
 
         // 3 - draw the next generation
         graphics::beginFrame();
-        graphics::drawSimulation(*sim);
+        graphics::drawFrame(*sim, selector);
         graphics::endFrame();
     }
 

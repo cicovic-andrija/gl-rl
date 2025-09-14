@@ -5,6 +5,7 @@
 #include <raylib.h>
 
 #include "simulation.h"
+#include "patterns.h"
 
 namespace graphics
 {
@@ -34,7 +35,7 @@ static_assert(GRID_WIDTH_PX % CELL_SIZE_XL == 0);
 inline constexpr int FPS_INIT_VALUE = 12;
 static_assert((FPS_INIT_VALUE & 0x1) == 0);
 
-inline constexpr int FPS_LOWER_LIMIT = 6;
+inline constexpr int FPS_LOWER_LIMIT = 4;
 inline constexpr int FPS_UPPER_LIMIT = 60;
 inline constexpr int FPS_INCREMENT = 2;
 
@@ -47,7 +48,11 @@ enum class Event
     RUN_PAUSE_SIM_REQUESTED,
     RANDOMIZE_SIM_REQUESTED,
     RESET_SIM_REQUESTED,
+    APPLY_PATTERN_REQUESTED,
+    NEXT_PATTERN_REQUESTED,
+    PREV_PATTERN_REQUESTED,
     TOGGLE_CELL_REQUESTED,
+    DUMP_REQUESTED,
     EXIT_REQUESTED,
 };
 
@@ -68,7 +73,7 @@ bool increaseFPS();
 bool decreaseFPS();
 InputEvent pollInput(bool allowCellResizing);
 std::pair<int, int> calcSimulationDimensions();
-void drawSimulation(const cgl::Simulation&);
+void drawFrame(const cgl::Simulation&, const cgl::PatternSelector& selector);
 
 } // namespace graphics
 
