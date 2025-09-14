@@ -11,8 +11,9 @@ namespace cgl
 Simulation::Simulation(int rows, int columns)
     : _a(rows, columns)
     , _b(rows, columns)
-    , _main(&_a)
+    , _current(&_a)
     , _temp(&_b)
+    , _age(0)
     , _running(false)
 {
 
@@ -30,15 +31,15 @@ int Simulation::countLiveNeighbours(int row, int col) const
         {  1, -1 },
         {  1,  1 }
     };
-    int nrows = _main->sizeRows();
-    int ncols = _main->sizeColumns();
+    int nrows = _current->sizeRows();
+    int ncols = _current->sizeColumns();
 
     int liveTotal = 0;
     for (const std::tuple<int, int>& offset : neighbourOffsets)
     {
         int neighbourRow = (row + std::get<0>(offset) + nrows) % nrows;
         int neighbourCol = (col + std::get<1>(offset) + ncols) % ncols;
-        liveTotal += _main->cellState(neighbourRow, neighbourCol) == LIVE; // 1/0
+        liveTotal += _current->cellState(neighbourRow, neighbourCol) == LIVE; // 1/0
     }
 
     return liveTotal;
@@ -48,12 +49,12 @@ bool Simulation::advance()
 {
     if (!_running) return false;
 
-    for (int row = 0; row < _main->sizeRows(); ++row)
+    for (int row = 0; row < _current->sizeRows(); ++row)
     {
-        for (int col = 0; col < _main->sizeColumns(); ++col)
+        for (int col = 0; col < _current->sizeColumns(); ++col)
         {
             int live = countLiveNeighbours(row, col);
-            int state = _main->cellState(row, col);
+            int state = _current->cellState(row, col);
 
             if (state == LIVE)
             {
@@ -70,7 +71,9 @@ bool Simulation::advance()
     }
 
     // for this to work, update every cell in *_temp before the swap
-    std::swap(_main, _temp);
+    std::swap(_current, _temp);
+
+    ++_age;
 
     return true;
 }
@@ -78,23 +81,31 @@ bool Simulation::advance()
 bool Simulation::toggleCell(int row, int col)
 {
     if (_running) return false;
-    return _main->toggleCellState(row, col);
+
+    return _current->toggleCellState(row, col);
 }
 
 bool Simulation::randomize()
 {
     if (_running) return false;
 
-    for (int row = 0; row < _main->sizeRows(); ++row)
+    reset();
+
+    for (int row = 0; row < _current->sizeRows(); ++row)
     {
-        for (int col = 0; col < _main->sizeColumns(); ++col)
+        for (int col = 0; col < _current->sizeColumns(); ++col)
         {
-            if (rand01() > 0.7) _main->markCellLive(row, col);
-            else _main->markCellDead(row, col);
+            if (rand01() > 0.7) _current->markCellLive(row, col);
+            else _current->markCellDead(row, col);
         }
     }
 
     return true;
+}
+
+long Simulation::age() const
+{
+    return _age;
 }
 
 bool Simulation::running() const
@@ -104,7 +115,7 @@ bool Simulation::running() const
 
 const Grid *Simulation::currentGeneration() const
 {
-    return _main;
+    return _current;
 }
 
 void Simulation::run()
@@ -123,8 +134,9 @@ bool Simulation::reset()
 
     _a.clear();
     // _b.clear(); // not necessary
-    _main = &_a;
+    _current = &_a;
     _temp = &_b;
+    _age = 0;
 
     return true;
 }

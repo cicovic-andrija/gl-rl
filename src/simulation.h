@@ -19,6 +19,7 @@ public:
     bool advance();
     bool toggleCell(int row, int col);
     bool randomize();
+    long age() const;
     bool running() const;
     const Grid *currentGeneration() const;
     void run();
@@ -28,8 +29,9 @@ public:
 private:
     Grid _a;
     Grid _b;
-    Grid *_main;
+    Grid *_current;
     Grid *_temp;
+    long _age;
     bool _running;
 
     int countLiveNeighbours(int row, int col) const;
