@@ -91,11 +91,18 @@ bool Simulation::advance()
     return true;
 }
 
-bool Simulation::toggleCell(int row, int col)
+bool Simulation::markCellLive(int row, int col)
 {
     if (_running) return false;
 
-    return _current->toggleCellState(row, col);
+    return _current->markCellLive(row, col);
+}
+
+bool Simulation::markCellDead(int row, int col)
+{
+    if (_running) return false;
+
+    return _current->markCellDead(row, col);
 }
 
 bool Simulation::randomize()

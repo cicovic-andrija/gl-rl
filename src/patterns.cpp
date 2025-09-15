@@ -27,14 +27,14 @@ bool Pattern::applyTo(Simulation *sim) const
     if (sim->sizeRows() < _requiredRows) return false;
     if (sim->sizeColumns() < _requiredCols) return false;
 
-    toggleCellsOn(sim);
+    markLiveCells(sim);
 
     return true;
 }
 
 // ----------------------------------------------------------------------------
 
-#define TGL(r, c) sim->toggleCell(r, c)
+#define TGL(r, c) sim->markCellLive(r, c)
 
 // ----------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ const char *Glider::name() const
     return "GLIDER";
 }
 
-void Glider::toggleCellsOn(Simulation *sim) const
+void Glider::markLiveCells(Simulation *sim) const
 {
     TGL(1, 3);
     TGL(2, 1);
@@ -59,7 +59,7 @@ const char *Period2Oscillators::name() const
     return "PERIOD 2 OSCILLATORS";
 }
 
-void Period2Oscillators::toggleCellsOn(Simulation *sim) const
+void Period2Oscillators::markLiveCells(Simulation *sim) const
 {
     TGL(1, 2);
     TGL(2, 2);
@@ -92,7 +92,7 @@ const char *GosperGliderGun::name() const
     return "GOSPER GLIDER GUN";
 }
 
-void GosperGliderGun::toggleCellsOn(Simulation *sim) const
+void GosperGliderGun::markLiveCells(Simulation *sim) const
 {
     TGL(5, 1);
     TGL(5, 2);
@@ -140,7 +140,7 @@ const char *StillLifes::name() const
     return "STILL LIFES";
 }
 
-void StillLifes::toggleCellsOn(Simulation *sim) const
+void StillLifes::markLiveCells(Simulation *sim) const
 {
     TGL(1, 1);
     TGL(1, 2);
@@ -177,7 +177,7 @@ const char *Spaceships::name() const
     return "SPACESHIPS";
 }
 
-void Spaceships::toggleCellsOn(Simulation *sim) const
+void Spaceships::markLiveCells(Simulation *sim) const
 {
     TGL(2, 4);
     TGL(2, 5);
@@ -233,7 +233,7 @@ const char *Pulsar::name() const
     return "PULSAR";
 }
 
-void Pulsar::toggleCellsOn(Simulation *sim) const
+void Pulsar::markLiveCells(Simulation *sim) const
 {
     TGL(4, 7);
     TGL(4, 8);
@@ -292,7 +292,7 @@ const char *KoksGalaxy::name() const
     return "KOK'S GALAXY";
 }
 
-void KoksGalaxy::toggleCellsOn(Simulation *sim) const
+void KoksGalaxy::markLiveCells(Simulation *sim) const
 {
     TGL(5, 5);
     TGL(5, 6);

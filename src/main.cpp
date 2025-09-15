@@ -20,7 +20,6 @@ int main()
     bool exit = false;
     while (!exit)
     {
-        // 1 - execute a request if available
         graphics::InputEvent event = graphics::pollInput(!sim->running() /* allowCellResizing */);
         switch (event.which)
         {
@@ -32,15 +31,12 @@ int main()
                 else sim->run();
                 break;
             case graphics::Event::RANDOMIZE_SIM_REQUESTED:
-                // does nothing if the sim is running
                 sim->randomize();
                 break;
             case graphics::Event::RESET_SIM_REQUESTED:
-                // does nothing if the sim is running
                 sim->reset();
                 break;
             case graphics::Event::APPLY_PATTERN_REQUESTED: {
-                // does nothing if the sim is running
                 selector.selectedPattern()->applyTo(sim);
                 break;
             }
@@ -55,8 +51,8 @@ int main()
                 sim = makeSimulation();
                 break;
             case graphics::Event::TOGGLE_CELL_REQUESTED:
-                // does nothing if the sim is running
-                sim->toggleCell(event.row, event.col);
+                event.flagged ? sim->markCellDead(event.first, event.second)
+                    : sim->markCellLive(event.first, event.second);
                 break;
             case graphics::Event::DUMP_REQUESTED:
                 sim->dump();
@@ -65,10 +61,10 @@ int main()
                 break;
         }
 
-        // 2 - advance the game to the next generation
-        sim->advance();
+        while (graphics::checkClock()) {
+            sim->advance();
+        }
 
-        // 3 - draw the next generation
         graphics::beginFrame();
         graphics::drawFrame(*sim, selector);
         graphics::endFrame();

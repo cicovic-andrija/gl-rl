@@ -19,7 +19,8 @@ public:
     int sizeRows() const;
     int sizeColumns() const;
     bool advance();
-    bool toggleCell(int row, int col);
+    bool markCellLive(int row, int col);
+    bool markCellDead(int row, int col);
     bool randomize();
     long age() const;
     bool running() const;

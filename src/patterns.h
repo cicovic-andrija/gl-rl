@@ -23,7 +23,7 @@ private:
     int _requiredRows;
     int _requiredCols;
 
-    virtual void toggleCellsOn(Simulation *) const = 0;
+    virtual void markLiveCells(Simulation *) const = 0;
 };
 
 // ----------------------------------------------------------------------------
@@ -34,7 +34,7 @@ public:
     const char *name() const override;
 
 private:
-    void toggleCellsOn(Simulation *) const override;
+    void markLiveCells(Simulation *) const override;
 };
 
 // ----------------------------------------------------------------------------
@@ -45,7 +45,7 @@ public:
     const char *name() const override;
 
 private:
-    void toggleCellsOn(Simulation *) const override;
+    void markLiveCells(Simulation *) const override;
 };
 
 class GosperGliderGun : public Pattern
@@ -55,7 +55,7 @@ public:
     const char *name() const override;
 
 private:
-    void toggleCellsOn(Simulation *) const override;
+    void markLiveCells(Simulation *) const override;
 };
 
 // ----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ public:
     const char *name() const override;
 
 private:
-    void toggleCellsOn(Simulation *) const override;
+    void markLiveCells(Simulation *) const override;
 };
 
 // ----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ public:
     const char *name() const override;
 
 private:
-    void toggleCellsOn(Simulation *) const override;
+    void markLiveCells(Simulation *) const override;
 };
 
 // ----------------------------------------------------------------------------
@@ -88,7 +88,7 @@ public:
     const char *name() const override;
 
 private:
-    void toggleCellsOn(Simulation *) const override;
+    void markLiveCells(Simulation *) const override;
 };
 
 // ----------------------------------------------------------------------------
@@ -99,7 +99,7 @@ public:
     const char *name() const override;
 
 private:
-    void toggleCellsOn(Simulation *) const override;
+    void markLiveCells(Simulation *) const override;
 };
 
 // ----------------------------------------------------------------------------

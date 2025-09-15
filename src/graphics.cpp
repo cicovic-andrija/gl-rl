@@ -5,8 +5,8 @@ namespace graphics
 
 namespace globals
 {
-    int fps = FPS_INIT_VALUE;
     int cellSize = CELL_SIZE_L;
+    int clockTicksHz = 1;
     bool showControls = false;
     Font monoFont;
 }
@@ -20,7 +20,7 @@ void initialize()
 {
     InitWindow(WINDOW_WIDTH_PX, WINDOW_HEIGHT_PX, "Conway's Game of Life");
     SetExitKey(KEY_NULL);
-    SetTargetFPS(globals::fps);
+    SetTargetFPS(TARGET_FPS);
     globals::monoFont = LoadFont("resources/JetBrainsMono-Bold.ttf");
 }
 
@@ -40,21 +40,30 @@ void endFrame()
     EndDrawing();
 }
 
-bool increaseFPS()
+bool checkClock()
 {
-    if (globals::fps < FPS_UPPER_LIMIT) {
-        globals::fps += FPS_INCREMENT;
-        SetTargetFPS(globals::fps);
+    static float accumulator = 0.0f;
+    accumulator += GetFrameTime();;
+    if (accumulator >= 1.0f/globals::clockTicksHz) {
+        accumulator -= 1.0f/globals::clockTicksHz;
         return true;
     }
     return false;
 }
 
-bool decreaseFPS()
+bool tickFaster()
 {
-    if (globals::fps > FPS_LOWER_LIMIT) {
-        globals::fps -= FPS_INCREMENT;
-        SetTargetFPS(globals::fps);
+    if (globals::clockTicksHz < 16) {
+        globals::clockTicksHz += 1;
+        return true;
+    }
+    return false;
+}
+
+bool tickSlower()
+{
+    if (globals::clockTicksHz > 1) {
+        globals::clockTicksHz -= 1;
         return true;
     }
     return false;
@@ -108,10 +117,10 @@ InputEvent pollInput(bool allowCellResizing)
         return Event::CONTROLS_DISPLAY_TOGGLED;
     }
     if (IsKeyPressed(KEY_F)) {
-        return increaseFPS() ? Event::FPS_TARGET_CHANGED : Event::NIL;
+        return tickFaster() ? Event::FPS_TARGET_CHANGED : Event::NIL;
     }
     if (IsKeyPressed(KEY_S)) {
-        return decreaseFPS() ? Event::FPS_TARGET_CHANGED : Event::NIL;
+        return tickSlower() ? Event::FPS_TARGET_CHANGED : Event::NIL;
     }
     if (IsKeyPressed(KEY_SPACE)) {
         return Event::RUN_PAUSE_SIM_REQUESTED;
@@ -140,16 +149,25 @@ InputEvent pollInput(bool allowCellResizing)
     if (IsKeyPressed(KEY_D)) {
         return Event::DUMP_REQUESTED;
     }
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-    {
+
+    auto clickEvent = [](bool flag = false) ->InputEvent {
         Vector2 mousePosition = GetMousePosition();
         if (mousePosition.y >= GRID_ORIGIN_Y) {
             InputEvent event(Event::TOGGLE_CELL_REQUESTED);
-            event.row = (mousePosition.y - GRID_ORIGIN_Y) / globals::cellSize;
-            event.col = mousePosition.x / globals::cellSize;
+            event.first = (mousePosition.y - GRID_ORIGIN_Y) / globals::cellSize;
+            event.second = mousePosition.x / globals::cellSize;
+            event.flagged = flag;
             return event;
         }
         return Event::NIL;
+    };
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+    {
+        return clickEvent();
+    }
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
+    {
+        return clickEvent(true /* flag the event*/);
     }
 
     return Event::NIL;
@@ -178,8 +196,8 @@ void drawHUD(const cgl::Simulation &sim, const cgl::PatternSelector& selector)
     else
     {
         hud = TextFormat(
-            "[fps %02i] [%-11s] [gen %5ld] | [p(a)ttern %20s] | (c)ontrols ",
-            globals::fps,
+            "[gen/sec %2i] [%-11s] [gen %5ld] | [p(a)ttern %20s] | (c)ontrols ",
+            globals::clockTicksHz,
             sim.running()
                 ? option1Messages[secOrdinal % (sizeof(option1Messages) / sizeof(option1Messages[0]))]
                 : option0Messages[secOrdinal % (sizeof(option0Messages) / sizeof(option0Messages[0]))],

@@ -10,6 +10,8 @@
 namespace graphics
 {
 
+inline constexpr int TARGET_FPS = 60;
+
 inline constexpr int CELL_SIZE_S  = 5; // px
 inline constexpr int CELL_SIZE_M  = CELL_SIZE_S * 2;
 inline constexpr int CELL_SIZE_L  = CELL_SIZE_M * 2;
@@ -32,13 +34,6 @@ static_assert(GRID_HEIGHT_PX % CELL_SIZE_XL == 0);
 [[maybe_unused]] inline constexpr int GRID_WIDTH_PX = WINDOW_WIDTH_PX;
 static_assert(GRID_WIDTH_PX % CELL_SIZE_XL == 0);
 
-inline constexpr int FPS_INIT_VALUE = 12;
-static_assert((FPS_INIT_VALUE & 0x1) == 0);
-
-inline constexpr int FPS_LOWER_LIMIT = 4;
-inline constexpr int FPS_UPPER_LIMIT = 60;
-inline constexpr int FPS_INCREMENT = 2;
-
 enum class Event
 {
     NIL,
@@ -58,19 +53,19 @@ enum class Event
 
 struct InputEvent
 {
-    InputEvent(Event e): which(e), row(-1), col(-1) {}
+    InputEvent(Event e): which(e), first(-1), second(-1), flagged(false) {}
 
     Event which;
-    int row;
-    int col;
+    int first;
+    int second;
+    bool flagged;
 };
 
 void initialize();
 void finalize();
 void beginFrame();
 void endFrame();
-bool increaseFPS();
-bool decreaseFPS();
+bool checkClock();
 InputEvent pollInput(bool allowCellResizing);
 std::pair<int, int> calcSimulationDimensions();
 void drawFrame(const cgl::Simulation&, const cgl::PatternSelector& selector);
