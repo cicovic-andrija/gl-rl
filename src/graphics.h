@@ -19,10 +19,9 @@ inline constexpr int WINDOW_WIDTH_PX = 1440;
 inline constexpr int WINDOW_HEIGHT_PX = 910;
 
 inline constexpr int HUD_HEIGHT_PX = 30;
-inline constexpr int HUD_TEXT_HEIGHT_PX = HUD_HEIGHT_PX - 10;
+inline constexpr int HUD_WIDTH_PX = WINDOW_WIDTH_PX;
+inline constexpr int HUD_TEXT_FONT_SIZE_PX = HUD_HEIGHT_PX - 10;
 inline constexpr int HUD_TEXT_SPACING = 2;
-inline constexpr int HUD_POS_X = 5;
-inline constexpr int HUD_POS_Y = (HUD_HEIGHT_PX - HUD_TEXT_HEIGHT_PX) / 2;
 
 inline constexpr int GRID_ORIGIN_Y = HUD_HEIGHT_PX;
 inline constexpr int GRID_HEIGHT_PX = WINDOW_HEIGHT_PX - GRID_ORIGIN_Y;

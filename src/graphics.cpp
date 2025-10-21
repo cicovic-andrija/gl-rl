@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "graphics.h"
 
 namespace graphics
@@ -173,12 +175,12 @@ void drawHUD(const cgl::Simulation &sim, const cgl::PatternSelector& selector)
 
     if (globals::showControls)
     {
-        hud = "run/pause (SPACE), (f)aster, (s)lower, (r)eset, randomi(z)e, (e)nlarge, s(h)rink, (a)pply, (n)ext, (p)revious, (c)lose";
+        hud = "RUN/PAUSE (SPACE), (F)ASTER, (S)LOWER, (R)ESET, RANDOMI(Z)E, (E)NLARGE, S(H)RINK, (A)PPLY, (N)EXT, (P)REVIOUS, (C)LOSE";
     }
     else
     {
         hud = TextFormat(
-            "[fps %02i] [%-11s] [gen %5ld] | [p(a)ttern %20s] | (c)ontrols ",
+            "GEN/S %02i | %-11s | GEN %05ld | %-20s | (C)TRLS ",
             globals::fps,
             sim.running()
                 ? option1Messages[secOrdinal % (sizeof(option1Messages) / sizeof(option1Messages[0]))]
@@ -187,9 +189,10 @@ void drawHUD(const cgl::Simulation &sim, const cgl::PatternSelector& selector)
             selector.selectedPattern()->name()
         );
     }
+    Vector2 sz = MeasureTextEx(globals::monoFont, hud, HUD_TEXT_FONT_SIZE_PX, HUD_TEXT_SPACING);
 
-    Vector2 position = { HUD_POS_X, HUD_POS_Y };
-    DrawTextEx(globals::monoFont, hud, position, HUD_TEXT_HEIGHT_PX, HUD_TEXT_SPACING, TEXT_COLOR);
+    Vector2 position = { (HUD_WIDTH_PX - sz.x) / 2, (HUD_HEIGHT_PX - sz.y) / 2 };
+    DrawTextEx(globals::monoFont, hud, position, HUD_TEXT_FONT_SIZE_PX, HUD_TEXT_SPACING, TEXT_COLOR);
 }
 
 std::pair<int, int> calcSimulationDimensions()
